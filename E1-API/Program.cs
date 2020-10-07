@@ -29,8 +29,14 @@ namespace E1_API
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<E1Context>();
-                    context.Database.EnsureCreated();
+                    //E1 Context
+                    var context1 = services.GetRequiredService<E1Context>();
+                    context1.Database.EnsureCreated();
+
+
+                    //App identity Context
+                    var context2 = services.GetRequiredService<AppIdentityContext>();
+                    context2.Database.EnsureCreated();
                     // DbInitializer.Initialize(context);
                 }
                 catch (Exception ex)

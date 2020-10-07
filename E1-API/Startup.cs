@@ -12,16 +12,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
+using E1_Classes.User;
+using Microsoft.AspNetCore.Identity;
 
 namespace E1_API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
+        public Startup(IConfiguration configuration) => Configuration = configuration;
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -29,9 +29,9 @@ namespace E1_API
         {
             services.AddControllers();
             services.AddRazorPages();
-
-            services.AddDbContext<E1Context>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("E1Context")));
+            services.AddDbContext<E1Context>(options => options.UseSqlServer(Configuration.GetConnectionString("E1Context")));
+            services.AddDbContext<AppIdentityContext>(options => options.UseSqlServer(Configuration.GetConnectionString("IdentityContext")));
+            services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<AppIdentityContext>().AddDefaultTokenProviders();
 
         }
 
@@ -46,6 +46,8 @@ namespace E1_API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
